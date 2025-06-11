@@ -4,6 +4,8 @@ let inputToDo = document.getElementById('toDoInput');
 let displayToDo = document.getElementById('displayToDo');
 let deleteToDo = document.getElementsByClassName('deleteToDo');
 let updateToDo = document.getElementsByClassName('updateToDo');
+let filterToDo = document.getElementById('toDoFilter');
+
 
 inputToDo.addEventListener('keydown', function(event) {
     if (event.key === 'Enter') {
@@ -11,7 +13,7 @@ inputToDo.addEventListener('keydown', function(event) {
         if (todo) {
             let listSize = toDoList.length;
             toDoList.push(todo);
-            DisplayToDo();
+            DisplayToDo(toDoList);
         } else {
             alert('Please enter non empty To Do.')
         }
@@ -19,12 +21,27 @@ inputToDo.addEventListener('keydown', function(event) {
     }
 });
 
+filterToDo.addEventListener('keyup', function(event){
+    let filterText = filterToDo.value;
+    if (filterText) {
+        let tempList = [];
+        for (let item of toDoList) {
+            if (item.toLowerCase().includes(filterText.toLowerCase())) {
+                tempList.push(item);
+            }
+        }
+        DisplayToDo(tempList);
+    } else {
+        DisplayToDo(toDoList);
+    }
+}) 
+
 displayToDo.addEventListener('click', function(event) {
     if (event.target.classList.contains('delToDo')) {
         let id = event.target.id;
         let toDoIdx = id.split('-')[1];
         toDoList.splice(toDoIdx, 1);
-        DisplayToDo();
+        DisplayToDo(toDoList);
     }
 });
 
@@ -34,17 +51,17 @@ displayToDo.addEventListener('click', function(event) {
         let toDoIdx = id.split('-')[1];
         inputToDo.value = toDoList[toDoIdx];
         toDoList.splice(toDoIdx, 1);
-        DisplayToDo();
+        DisplayToDo(toDoList);
     }
 });
 
-function DisplayToDo () {
+function DisplayToDo (showList) {
     let toDoListToShow = '';
-    for (let i = 0; i < toDoList.length; i++) {
+    for (let i = 0; i < showList.length; i++) {
         toDoListToShow += 
         `<tr>
             <td>${i + 1}</td>
-            <td>${toDoList[i]}</td>
+            <td>${showList[i]}</td>
             <td class="delToDo" id="delToDo-${i}">DEL</td>
             <td class=updToDo id="updToDo-${i}">UPD</td>
         </tr>`;
